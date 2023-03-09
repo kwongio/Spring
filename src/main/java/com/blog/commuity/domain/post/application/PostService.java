@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+
 @Transactional
 @Service
 @RequiredArgsConstructor
@@ -22,17 +24,30 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    public Post getPost(Long id) {
-        return postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+    public PostRespDto getPost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        return new PostRespDto(post);
     }
 
     public Page<PostRespDto> getPostList(Pageable page) {
         return postRepository.findAll(page).map(PostRespDto::new);
     }
 
-    public Post register(PostReqDto postReqDto, Long id) {
+    public PostRespDto register(PostReqDto postReqDto, Long id) {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        Post post = postReqDto.toEntity(user);
-        return postRepository.save(post);
+        Post post = postRepository.save(postReqDto.toEntity(user));
+        return new PostRespDto(post, user);
+    }
+
+    public void remove(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        postRepository.delete(post);
+    }
+
+    public PostRespDto edit(Long id, @Valid PostReqDto postReqDto) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        post.edit(postReqDto);
+        return new PostRespDto(post);
+
     }
 }

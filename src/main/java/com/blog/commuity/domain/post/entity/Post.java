@@ -1,6 +1,7 @@
 package com.blog.commuity.domain.post.entity;
 
 
+import com.blog.commuity.domain.post.dto.PostReqDto;
 import com.blog.commuity.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
@@ -49,5 +50,10 @@ public class Post {
         this.content = content;
         this.views = 0L;
         this.user = user;
+    }
+
+    public void edit(PostReqDto postReqDto) {
+        this.title = postReqDto.getTitle();
+        this.content = postReqDto.getContent();
     }
 }

@@ -2,6 +2,7 @@ package com.blog.commuity.domain.post.dto;
 
 
 import com.blog.commuity.domain.post.entity.Post;
+import com.blog.commuity.domain.user.entity.User;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,16 @@ public class PostRespDto {
         this.content = post.getContent();
         this.views = post.getViews();
         this.user = new PostWriteUserDto(post.getUser());
+        this.createAt = post.getCreateAt();
+        this.updateAt = post.getUpdateAt();
+    }
+
+    public PostRespDto(Post post, User user) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.views = post.getViews();
+        this.user = new PostWriteUserDto(user);
         this.createAt = post.getCreateAt();
         this.updateAt = post.getUpdateAt();
     }

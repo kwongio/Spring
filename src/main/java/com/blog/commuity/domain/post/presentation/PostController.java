@@ -3,7 +3,7 @@ package com.blog.commuity.domain.post.presentation;
 
 import com.blog.commuity.domain.post.dto.PostReqDto;
 import com.blog.commuity.domain.post.application.PostService;
-import com.blog.commuity.domain.post.entity.Post;
+import com.blog.commuity.domain.post.dto.PostRespDto;
 import com.blog.commuity.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +21,7 @@ public class PostController {
 
     @GetMapping("/post/{id}")
     public ResponseEntity<?> getPost(@PathVariable Long id) {
-        Post post = postService.getPost(id);
+        PostRespDto post = postService.getPost(id);
         return ResponseEntity.ok(post);
     }
 
@@ -32,14 +32,22 @@ public class PostController {
 
     @PostMapping("/post/create")
     public ResponseEntity<?> register(@RequestBody @Valid PostReqDto postReqDto, @AuthenticationPrincipal User user) {
-        Post post = postService.register(postReqDto, user.getId());
+        PostRespDto post = postService.register(postReqDto, user.getId());
         return ResponseEntity.ok(post);
     }
 
+    @DeleteMapping("/post/{id}")
+    public ResponseEntity<?> editPost(@PathVariable Long id) {
+        postService.remove(id);
+        return ResponseEntity.ok(id + "번을 삭제완료했습니다.");
+    }
 
-//    @PostMapping("/post/edit/{postId]")
-//    public ResponseEntity<?> register(@RequestBody @Valid PostReqDto postReqDto, @AuthenticationPrincipal User user) {
-//        Post post = postService.register(postReqDto, user.getId());
-//        return ResponseEntity.ok(post);
-//    }
+
+    @PutMapping("/post/{id}")
+    public ResponseEntity<?> editPost(@PathVariable Long id, @RequestBody @Valid PostReqDto postReqDto) {
+        PostRespDto edit = postService.edit(id, postReqDto);
+
+        return ResponseEntity.ok(edit);
+    }
+
 }
