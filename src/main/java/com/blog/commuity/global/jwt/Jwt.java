@@ -6,6 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.blog.commuity.domain.user.entity.Role;
 import com.blog.commuity.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.Date;
 
@@ -17,7 +18,7 @@ public class Jwt {
 
     public static String create(User user) {
         String jwtToken = JWT.create()
-                .withSubject("bank")
+                .withSubject("jwt")
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .withClaim("id", user.getId())
                 .withClaim("role", user.getRole().name())

@@ -4,13 +4,14 @@ import com.blog.commuity.domain.user.application.UserService;
 import com.blog.commuity.domain.user.dto.JoinReqDto;
 import com.blog.commuity.domain.user.dto.JoinResDto;
 import com.blog.commuity.domain.user.entity.User;
-import com.blog.commuity.global.dto.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -19,26 +20,26 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
 
+    @Operation(summary = "회원가입")
+
     @PostMapping("/join")
     public ResponseEntity<?> join(@Valid @RequestBody JoinReqDto joinResDto) {
         JoinResDto join = userService.join(joinResDto);
-        return new ResponseEntity<>(new ResponseDto<>(1, "회원가입성공", join), HttpStatus.CREATED);
-    }
-
-    @GetMapping("/admin/s")
-    public ResponseEntity<?> admin() {
-        return ResponseEntity.ok("어드민");
+        return ResponseEntity.ok(join);
     }
 
 
-    @Operation(summary = "유저 한명 정보 가져오기", description = "유저정보")
+    @Operation(summary = "user정보와 postList정보 가져오기")
     @GetMapping("/myPage")
     public ResponseEntity<?> getInfo(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(userService.getInfo(user.getId()));
     }
 
 
-
+//    @GetMapping("/users")
+//    public ResponseEntity<?> getUserList() {
+//        return ResponseEntity.ok(userService.getUserList());
+//    }
 
 
 }

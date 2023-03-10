@@ -11,6 +11,7 @@ import com.blog.commuity.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,18 +37,24 @@ public class PostService {
     public PostRespDto register(PostReqDto postReqDto, Long id) {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         Post post = postRepository.save(postReqDto.toEntity(user));
-        return new PostRespDto(post, user);
-    }
-
-    public void remove(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        postRepository.delete(post);
-    }
-
-    public PostRespDto edit(Long id, @Valid PostReqDto postReqDto) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        post.edit(postReqDto);
         return new PostRespDto(post);
+    }
 
+    public void remove(Long id, Long userId) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        if (post.getUser().getId().equals(userId)) {
+            postRepository.delete(post);
+        }
+        throw new AccessDeniedException("권한없음");
+
+    }
+
+    public PostRespDto edit(Long id, PostReqDto postReqDto, Long userId) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        if (post.getUser().getId().equals(userId)) {
+            post.edit(postReqDto);
+            return new PostRespDto(post);
+        }
+        throw new AccessDeniedException("권한없음");
     }
 }
