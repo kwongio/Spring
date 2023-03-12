@@ -40,7 +40,6 @@ public class PostController {
     @Operation(summary = "post 등록하기")
     @PostMapping("/post/create")
     public ResponseEntity<?> register(@RequestPart(value = "post") @Valid PostReqDto postReqDto, @RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) {
-        System.out.println("file.getOriginalFilename() = " + file.getOriginalFilename());
         PostRespDto post = postService.register(postReqDto, user.getId());
         return ResponseEntity.ok(post);
     }
