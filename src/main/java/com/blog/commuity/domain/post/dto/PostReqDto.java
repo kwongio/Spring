@@ -5,6 +5,7 @@ import com.blog.commuity.domain.post.entity.Post;
 import com.blog.commuity.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
@@ -16,9 +17,11 @@ public class PostReqDto {
 
     @NotBlank
     private final String title;
-    @Lob
     @NotBlank
     private final String content;
+
+
+
 
 
     public Post toEntity(User user) {
