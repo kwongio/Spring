@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -21,7 +22,7 @@ public class PostController {
     private final PostService postService;
 
     @Operation(summary = "post 하나만 가져오기")
-    
+
     @GetMapping("/post/{id}")
     public ResponseEntity<?> getPost(@PathVariable Long id) {
         PostRespDto post = postService.getPost(id);
@@ -38,7 +39,8 @@ public class PostController {
 
     @Operation(summary = "post 등록하기")
     @PostMapping("/post/create")
-    public ResponseEntity<?> register(@RequestBody @Valid PostReqDto postReqDto, @AuthenticationPrincipal User user) {
+    public ResponseEntity<?> register(@RequestPart(value = "post") @Valid PostReqDto postReqDto, @RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) {
+        System.out.println("file.getOriginalFilename() = " + file.getOriginalFilename());
         PostRespDto post = postService.register(postReqDto, user.getId());
         return ResponseEntity.ok(post);
     }
