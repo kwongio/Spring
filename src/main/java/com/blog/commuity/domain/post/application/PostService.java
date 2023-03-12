@@ -14,8 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 @Transactional
 @Service
@@ -24,6 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final static String FILEPATH = "C:\\study-project\\Next\\public\\images\\";
 
     public PostRespDto getPost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
@@ -34,8 +38,13 @@ public class PostService {
         return postRepository.findAll(page).map(PostRespDto::new);
     }
 
-    public PostRespDto register(PostReqDto postReqDto, Long id) {
+    public PostRespDto register(PostReqDto postReqDto, MultipartFile multipartFile, Long id) throws IOException {
+        String ext = multipartFile.getContentType().split("/")[1];
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        String imageSaveName = UUID.randomUUID() + "." + ext;
+        String path = FILEPATH + imageSaveName;
+        multipartFile.transferTo(new File(path));
+        postReqDto.setImage(multipartFile, path , imageSaveName);
         Post post = postRepository.save(postReqDto.toEntity(user));
         return new PostRespDto(post);
     }

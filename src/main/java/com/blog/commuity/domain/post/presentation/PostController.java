@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,8 +40,10 @@ public class PostController {
 
     @Operation(summary = "post 등록하기")
     @PostMapping("/post/create")
-    public ResponseEntity<?> register(@RequestPart(value = "post") @Valid PostReqDto postReqDto, @RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) {
-        PostRespDto post = postService.register(postReqDto, user.getId());
+    public ResponseEntity<?> register(@RequestPart(value = "post") @Valid PostReqDto postReqDto, @RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) throws IOException {
+        PostRespDto post = postService.register(postReqDto, file, user.getId());
+        System.out.println("file.getContentType() = " + file.getContentType());
+        System.out.println(file.getOriginalFilename());
         return ResponseEntity.ok(post);
     }
 
