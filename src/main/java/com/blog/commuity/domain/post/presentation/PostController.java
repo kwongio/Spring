@@ -3,11 +3,13 @@ package com.blog.commuity.domain.post.presentation;
 
 import com.blog.commuity.domain.post.dto.PostReqDto;
 import com.blog.commuity.domain.post.application.PostService;
-import com.blog.commuity.domain.post.dto.PostRespDto;
+import com.blog.commuity.domain.post.dto.PostResDto;
 import com.blog.commuity.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,17 +25,16 @@ public class PostController {
     private final PostService postService;
 
     @Operation(summary = "post 하나만 가져오기")
-
-    @GetMapping("/post/{id}")
+    @GetMapping("/posts/{id}")
     public ResponseEntity<?> getPost(@PathVariable Long id) {
-        PostRespDto post = postService.getPost(id);
+        PostResDto post = postService.getPost(id);
         return ResponseEntity.ok(post);
     }
 
 
     @Operation(summary = "post 리스트 가져오기")
     @GetMapping("/posts")
-    public ResponseEntity<?> getPostList(Pageable page) {
+    public ResponseEntity<?> getPostList(@PageableDefault(direction = Sort.Direction.DESC, size = 10, sort = "id") Pageable page) {
         return ResponseEntity.ok(postService.getPostList(page));
     }
 
@@ -41,9 +42,7 @@ public class PostController {
     @Operation(summary = "post 등록하기")
     @PostMapping("/post/create")
     public ResponseEntity<?> register(@RequestPart(value = "post") @Valid PostReqDto postReqDto, @RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) throws IOException {
-        PostRespDto post = postService.register(postReqDto, file, user.getId());
-        System.out.println("file.getContentType() = " + file.getContentType());
-        System.out.println(file.getOriginalFilename());
+        PostResDto post = postService.register(postReqDto, file, user.getId());
         return ResponseEntity.ok(post);
     }
 
@@ -58,8 +57,8 @@ public class PostController {
 
     @Operation(summary = "post 수정하기")
     @PutMapping("/post/{id}")
-    public ResponseEntity<?> editPost(@PathVariable Long id, @RequestBody @Valid PostReqDto postReqDto, @AuthenticationPrincipal User user) {
-        PostRespDto edit = postService.edit(id, postReqDto, user.getId());
+    public ResponseEntity<?> editPost(@PathVariable Long id, @RequestPart(value = "post") @Valid PostReqDto postReqDto, @RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) {
+        PostResDto edit = postService.edit(id, postReqDto, user.getId());
         return ResponseEntity.ok(edit);
     }
 }

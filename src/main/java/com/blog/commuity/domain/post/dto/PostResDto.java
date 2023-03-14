@@ -2,13 +2,12 @@ package com.blog.commuity.domain.post.dto;
 
 
 import com.blog.commuity.domain.post.entity.Post;
-import com.blog.commuity.domain.user.entity.User;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class PostRespDto {
+public class PostResDto {
 
     private final Long id;
     private final String title;
@@ -22,7 +21,7 @@ public class PostRespDto {
     private final String imageSaveName;
     private final String mime;
 
-    public PostRespDto(Post post) {
+    public PostResDto(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();

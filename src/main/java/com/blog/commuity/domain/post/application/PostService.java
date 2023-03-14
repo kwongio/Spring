@@ -1,7 +1,7 @@
 package com.blog.commuity.domain.post.application;
 
 import com.blog.commuity.domain.post.dto.PostReqDto;
-import com.blog.commuity.domain.post.dto.PostRespDto;
+import com.blog.commuity.domain.post.dto.PostResDto;
 import com.blog.commuity.domain.post.entity.Post;
 import com.blog.commuity.domain.post.exception.PostNotFoundException;
 import com.blog.commuity.domain.post.repository.PostRepository;
@@ -29,25 +29,22 @@ public class PostService {
     private final UserRepository userRepository;
     private final static String FILEPATH = "C:\\study-project\\Next\\public\\images\\";
 
-    public PostRespDto getPost(Long id) {
+    public PostResDto getPost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        return new PostRespDto(post);
+        return new PostResDto(post);
     }
 
-    public Page<PostRespDto> getPostList(Pageable page) {
-        return postRepository.findAll(page).map(PostRespDto::new);
+    public Page<PostResDto> getPostList(Pageable page) {
+        return postRepository.findAll(page).map(PostResDto::new);
     }
 
-    public PostRespDto register(PostReqDto postReqDto, MultipartFile multipartFile, Long id) throws IOException {
-        String ext = multipartFile.getContentType().split("/")[1];
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        String imageSaveName = UUID.randomUUID() + "." + ext;
-        String path = FILEPATH + imageSaveName;
-        multipartFile.transferTo(new File(path));
-        postReqDto.setImage(multipartFile, path , imageSaveName);
+    public PostResDto register(PostReqDto postReqDto, MultipartFile multipartFile, Long userId) throws IOException {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        imageSave(postReqDto, multipartFile);
         Post post = postRepository.save(postReqDto.toEntity(user));
-        return new PostRespDto(post);
+        return new PostResDto(post);
     }
+
 
     public void remove(Long id, Long userId) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
@@ -58,12 +55,22 @@ public class PostService {
 
     }
 
-    public PostRespDto edit(Long id, PostReqDto postReqDto, Long userId) {
+    public PostResDto edit(Long id, PostReqDto postReqDto, Long userId) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         if (post.getUser().getId().equals(userId)) {
             post.edit(postReqDto);
-            return new PostRespDto(post);
+            return new PostResDto(post);
         }
         throw new AccessDeniedException("권한없음");
     }
+
+
+    private static void imageSave(PostReqDto postReqDto, MultipartFile multipartFile) throws IOException {
+        String ext = multipartFile.getContentType().split("/")[1];
+        String imageSaveName = UUID.randomUUID() + "." + ext;
+        String path = FILEPATH + imageSaveName;
+        multipartFile.transferTo(new File(path));
+        postReqDto.setImage(multipartFile, path, imageSaveName);
+    }
+
 }

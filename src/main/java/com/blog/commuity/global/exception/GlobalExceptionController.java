@@ -1,5 +1,6 @@
 package com.blog.commuity.global.exception;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.blog.commuity.domain.user.exception.UserException;
 import com.blog.commuity.global.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -35,4 +36,6 @@ public class GlobalExceptionController {
         }
         return ResponseEntity.badRequest().body(new ResponseDto<>(-1, "유효성 검사", map));
     }
+
+
 }
