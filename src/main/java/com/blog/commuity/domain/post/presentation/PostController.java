@@ -34,7 +34,7 @@ public class PostController {
 
     @Operation(summary = "post 리스트 가져오기")
     @GetMapping("/posts")
-    public ResponseEntity<?> getPostList(@PageableDefault(direction = Sort.Direction.DESC, size = 10, sort = "id") Pageable page) {
+    public ResponseEntity<?> getPostList(@PageableDefault(direction = Sort.Direction.DESC, size = 20, sort = "id") Pageable page) {
         return ResponseEntity.ok(postService.getPostList(page));
     }
 
@@ -42,23 +42,23 @@ public class PostController {
     @Operation(summary = "post 등록하기")
     @PostMapping("/post/create")
     public ResponseEntity<?> register(@RequestPart(value = "post") @Valid PostReqDto postReqDto, @RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) throws IOException {
-        PostResDto post = postService.register(postReqDto, file, user.getId());
-        return ResponseEntity.ok(post);
+        Long id = postService.register(postReqDto, file, user.getId());
+        return ResponseEntity.ok(id);
     }
 
 
     @Operation(summary = "post 삭제하기")
     @DeleteMapping("/post/{id}")
-    public ResponseEntity<?> editPost(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<?> deletePost(@PathVariable Long id, @AuthenticationPrincipal User user) {
         postService.remove(id, user.getId());
-        return ResponseEntity.ok(id + "번을 삭제완료했습니다.");
+        return ResponseEntity.ok(id);
     }
 
 
     @Operation(summary = "post 수정하기")
-    @PutMapping("/post/{id}")
-    public ResponseEntity<?> editPost(@PathVariable Long id, @RequestPart(value = "post") @Valid PostReqDto postReqDto, @RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) {
-        PostResDto edit = postService.edit(id, postReqDto, user.getId());
-        return ResponseEntity.ok(edit);
+    @PostMapping("/post/{id}")
+    public ResponseEntity<?> editPost(@PathVariable Long id, @RequestBody @Valid PostReqDto postReqDto, @AuthenticationPrincipal User user) {
+        postService.edit(id, postReqDto, user.getId());
+        return ResponseEntity.ok(id);
     }
 }

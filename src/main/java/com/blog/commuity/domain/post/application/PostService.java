@@ -38,11 +38,11 @@ public class PostService {
         return postRepository.findAll(page).map(PostResDto::new);
     }
 
-    public PostResDto register(PostReqDto postReqDto, MultipartFile multipartFile, Long userId) throws IOException {
+    public Long register(PostReqDto postReqDto, MultipartFile multipartFile, Long userId) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         imageSave(postReqDto, multipartFile);
         Post post = postRepository.save(postReqDto.toEntity(user));
-        return new PostResDto(post);
+        return post.getId();
     }
 
 
@@ -55,11 +55,11 @@ public class PostService {
 
     }
 
-    public PostResDto edit(Long id, PostReqDto postReqDto, Long userId) {
+    public void edit(Long id, PostReqDto postReqDto, Long userId) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         if (post.getUser().getId().equals(userId)) {
             post.edit(postReqDto);
-            return new PostResDto(post);
+            return;
         }
         throw new AccessDeniedException("권한없음");
     }

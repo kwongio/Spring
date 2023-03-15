@@ -24,14 +24,13 @@ public class UserService {
     private final UserQueryRepositoryImpl userQueryRepository;
 
 
-    public JoinResDto join(JoinReqDto joinDto) {
+    public void join(JoinReqDto joinDto) {
         Optional<User> username = userRepository.findByUsername(joinDto.getUsername());
         Optional<User> email = userRepository.findByEmail(joinDto.getEmail());
         if (username.isPresent() || email.isPresent()) {
             throw new AlreadyExistUserException();
         }
-        User user = userRepository.save(joinDto.toEntity(passwordEncoder));
-        return new JoinResDto(user);
+        userRepository.save(joinDto.toEntity(passwordEncoder));
     }
 
     public UserInfoResDto getInfo(Long id) {

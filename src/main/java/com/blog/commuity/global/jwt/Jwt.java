@@ -18,8 +18,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class Jwt {
     public static final String SECRET = "시크릿키";
-    //        public static final int EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; //일주일
-    public static final long EXPIRATION_TIME = Duration.ofSeconds(5).toMillis(); //일주일
+    public static final long EXPIRATION_TIME = Duration.ofDays(7).toMillis();
     public static final String PREFIX = "Bearer ";
 
     public static String create(User user) {
