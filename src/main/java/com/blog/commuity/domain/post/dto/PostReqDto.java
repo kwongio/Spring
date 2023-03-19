@@ -18,21 +18,9 @@ public class PostReqDto {
     private final String title;
     @NotBlank
     private final String content;
-    private String imageUrl;
-    private String imageOriginalName;
-    private String mime;
-    private String imageSaveName;
-
 
     public Post toEntity(User user) {
-        return new Post(title, content, user, imageUrl, imageOriginalName, mime, imageSaveName);
-    }
-
-    public void setImage(MultipartFile file, String path, String imageSaveName) {
-        this.imageUrl = path;
-        this.imageOriginalName = file.getOriginalFilename();
-        this.mime = file.getContentType();
-        this.imageSaveName = imageSaveName;
+        return new Post(title, content, user);
     }
 
 }

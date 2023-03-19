@@ -14,7 +14,7 @@ class JwtTest {
     @Test
     void create() {
         User user = new User(1L, Role.CUSTOMER);
-        String token = Jwt.create(user);
+        String token = Jwt.createAccessToken(user);
         System.out.println(token);
         assertTrue(token.startsWith(Jwt.PREFIX));
     }
@@ -22,7 +22,7 @@ class JwtTest {
     @Test
     void verify() {
         String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5rIiwicm9sZSI6IkNVU1RPTUVSIiwiaWQiOjEsImV4cCI6MTY3ODE3MzA1OH0.1fF2LnUrQRE7CuXDKcAUlJDMxfrbr0BB_OnxWcmWY8sxNfuRPiLVpzWBugy88mws671jhuxsYFW6AYJvqYwMxA";
-        User user = Jwt.verify(token);
+        User user = Jwt.accessTokenVerify(token);
         System.out.println(user.getId());
         System.out.println(user.getRole());
         assertThat(user.getId()).isEqualTo(1L);

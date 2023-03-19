@@ -2,6 +2,7 @@ package com.blog.commuity.global.util;
 
 import com.blog.commuity.global.dto.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseCookie;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

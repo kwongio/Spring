@@ -16,10 +16,7 @@ public class PostResDto {
     private final PostWriteUserDto user;
     private final LocalDateTime createAt;
     private final LocalDateTime updateAt;
-    private final String imageUrl;
-    private final String imageOriginalName;
-    private final String imageSaveName;
-    private final String mime;
+
 
     public PostResDto(Post post) {
         this.id = post.getId();
@@ -29,10 +26,7 @@ public class PostResDto {
         this.user = new PostWriteUserDto(post.getUser());
         this.createAt = post.getCreateAt();
         this.updateAt = post.getUpdateAt();
-        this.imageUrl = post.getImageUrl();
-        this.imageOriginalName = post.getImageOriginalName();
-        this.imageSaveName = post.getImageSaveName();
-        this.mime = post.getMime();
+
     }
 
 

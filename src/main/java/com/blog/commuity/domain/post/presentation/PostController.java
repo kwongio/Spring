@@ -41,8 +41,8 @@ public class PostController {
 
     @Operation(summary = "post 등록하기")
     @PostMapping("/post/create")
-    public ResponseEntity<?> register(@RequestPart(value = "post") @Valid PostReqDto postReqDto, @RequestPart(value = "file") MultipartFile file, @AuthenticationPrincipal User user) throws IOException {
-        Long id = postService.register(postReqDto, file, user.getId());
+    public ResponseEntity<?> register(@RequestBody @Valid PostReqDto postReqDto, @AuthenticationPrincipal User user) throws IOException {
+        Long id = postService.register(postReqDto, user.getId());
         return ResponseEntity.ok(id);
     }
 

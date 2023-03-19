@@ -6,6 +6,7 @@ import com.blog.commuity.domain.user.entity.User;
 import com.blog.commuity.global.util.CustomResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,9 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Duration;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -53,8 +56,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
-        String jwtToken = Jwt.create(user);
+        String jwtToken = Jwt.createAccessToken(user);
+        String refreshToken = Jwt.createRefreshToken(user);
         response.addHeader(HttpHeaders.AUTHORIZATION, jwtToken);
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .maxAge(Duration.ofDays(14))
+                .path("/")
+//                .secure(true)
+//                .sameSite("None")
+//                .domain("localhost:3000")
+//                .httpOnly(true)
+                .build();
+        response.setHeader("Set-Cookie", cookie.toString());
         LoginResDto loginResDto = new LoginResDto(user);
         CustomResponse.success(response, loginResDto);
 

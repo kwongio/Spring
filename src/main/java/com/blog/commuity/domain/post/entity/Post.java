@@ -43,26 +43,14 @@ public class Post {
     @Column(nullable = false)
     @LastModifiedDate
     private LocalDateTime updateAt;
-    @Column(nullable = false)
-    private String imageUrl;
-    @Column(nullable = false)
-    private String imageOriginalName;
-
-    @Column(nullable = false)
-    private String imageSaveName;
-    @Column(nullable = false)
-    private String mime;
 
 
-    public Post(String title, String content, User user, String imageUrl, String imageOriginalName, String mime, String imageSaveName) {
+
+    public Post(String title, String content, User user) {
         this.title = title;
         this.content = content;
         this.views = 0L;
         this.user = user;
-        this.imageUrl = imageUrl;
-        this.imageOriginalName = imageOriginalName;
-        this.mime = mime;
-        this.imageSaveName = imageSaveName;
 
     }
 

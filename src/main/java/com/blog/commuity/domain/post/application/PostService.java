@@ -38,9 +38,9 @@ public class PostService {
         return postRepository.findAll(page).map(PostResDto::new);
     }
 
-    public Long register(PostReqDto postReqDto, MultipartFile multipartFile, Long userId) throws IOException {
+    public Long register(PostReqDto postReqDto, Long userId) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        imageSave(postReqDto, multipartFile);
+//        imageSave(postReqDto, multipartFile);
         Post post = postRepository.save(postReqDto.toEntity(user));
         return post.getId();
     }
@@ -65,12 +65,12 @@ public class PostService {
     }
 
 
-    private static void imageSave(PostReqDto postReqDto, MultipartFile multipartFile) throws IOException {
-        String ext = multipartFile.getContentType().split("/")[1];
-        String imageSaveName = UUID.randomUUID() + "." + ext;
-        String path = FILEPATH + imageSaveName;
-        multipartFile.transferTo(new File(path));
-        postReqDto.setImage(multipartFile, path, imageSaveName);
-    }
+//    private static void imageSave(PostReqDto postReqDto, MultipartFile multipartFile) throws IOException {
+//        String ext = multipartFile.getContentType().split("/")[1];
+//        String imageSaveName = UUID.randomUUID() + "." + ext;
+//        String path = FILEPATH + imageSaveName;
+//        multipartFile.transferTo(new File(path));
+//        postReqDto.setImage(multipartFile, path, imageSaveName);
+//    }
 
 }

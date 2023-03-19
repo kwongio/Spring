@@ -39,8 +39,5 @@ public class UserService {
     }
 
 
-//    public List<UserRespDto> getUserList() {
-//        return userRepository.findAll().stream().map(UserRespDto::new).collect(Collectors.toList());
-//
-//    }
+
 }
