@@ -1,12 +1,15 @@
 package com.blog.commuity.domain.post.presentation;
 
 
+import com.blog.commuity.domain.post.dto.PostInfiniteScrollResDto;
 import com.blog.commuity.domain.post.dto.PostReqDto;
 import com.blog.commuity.domain.post.application.PostService;
 import com.blog.commuity.domain.post.dto.PostResDto;
 import com.blog.commuity.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -34,8 +37,21 @@ public class PostController {
 
     @Operation(summary = "post 리스트 가져오기")
     @GetMapping("/posts")
+
     public ResponseEntity<?> getPostList(@PageableDefault(direction = Sort.Direction.DESC, size = 20, sort = "id") Pageable page) {
-        return ResponseEntity.ok(postService.getPostList(page));
+        Page<PostResDto> postList = postService.getPostList(page);
+        int pageNum = page.getPageNumber();
+        String next = "";
+        String prev = "";
+        if (!postList.isLast()) {
+            next = "http://localhost:8080/posts?page=" + (pageNum + 2);
+        }
+        if (!postList.isFirst()) {
+            prev = "http://localhost:8080/posts?page=" + (pageNum - 1);
+        }
+        PostInfiniteScrollResDto postInfiniteScrollResDto = new PostInfiniteScrollResDto(next, prev, postList.getContent());
+
+        return ResponseEntity.ok(postInfiniteScrollResDto);
     }
 
 
