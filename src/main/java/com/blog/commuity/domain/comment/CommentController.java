@@ -8,7 +8,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ public class CommentController {
 
     @PostMapping("/comment/{postId}")
     public ResponseEntity<?> addComment(@Valid @RequestBody CommentReqDto commentReqDto, @PathVariable Long postId, @AuthenticationPrincipal User user) {
-        CommentResDto commentResDto = commentService.addComment(commentReqDto, postId, user.getId());
+        ParentCommentResDto commentResDto = commentService.addComment(commentReqDto, postId, user.getId());
         return ResponseEntity.ok("등록완료");
     }
 
@@ -29,11 +28,7 @@ public class CommentController {
         return ResponseEntity.ok("등록완료");
     }
 
-    @GetMapping("/comments")
-    public ResponseEntity<?> getCommentList() {
-        List<Comment> commentList = commentService.getCommentList();
-        return ResponseEntity.ok(commentList);
-    }
+
 
 
 }

@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -23,11 +23,11 @@ public class CommentService {
     private final UserRepository userRepository;
 
 
-    public CommentResDto addComment(CommentReqDto commentReqDto, Long postId, Long userId) {
+    public ParentCommentResDto addComment(CommentReqDto commentReqDto, Long postId, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         Comment comment = commentRepository.save(commentReqDto.toEntity(user, post));
-        return new CommentResDto(comment);
+        return new ParentCommentResDto(comment);
     }
 
     public void addReplyComment(CommentReqDto commentReqDto, Long postId, Long userId, Long commentId) {
@@ -36,14 +36,30 @@ public class CommentService {
         Comment parentComment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         Comment replyComment = new Comment(commentReqDto, user, post, parentComment);
         commentRepository.save(replyComment);
+
     }
 
 
-    public List<Comment> getCommentList() {
-        return commentRepository.findAll();
+    public List<ParentCommentResDto> getCommentByPostId(Long postId) {
+        List<Comment> commentList = commentRepository.findByPostId(postId);
+        List<ParentCommentResDto> result = new ArrayList<>();
+        for (Comment comment : commentList) {
+            if (comment.getParentComment() == null) {
+                ParentCommentResDto commentResDto = new ParentCommentResDto(comment);
+                commentResDto.setChildComment(getChildComments(comment));
+                result.add(commentResDto);
+            }
+
+        }
+        return result;
     }
 
-    public List<CommentResDto> getCommentByPostId(Long postId) {
-        return commentRepository.findByPostId(postId).stream().map(CommentResDto::new).collect(Collectors.toList());
+    private List<ChildrenCommentResDto> getChildComments(Comment comment) {
+        List<ChildrenCommentResDto> childComments = new ArrayList<>();
+        for (Comment child : comment.getChildComments()) {
+            ChildrenCommentResDto childCommentDto = new ChildrenCommentResDto(child);
+            childComments.add(childCommentDto);
+        }
+        return childComments;
     }
 }

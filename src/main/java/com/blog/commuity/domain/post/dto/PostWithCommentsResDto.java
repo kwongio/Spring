@@ -1,7 +1,7 @@
 package com.blog.commuity.domain.post.dto;
 
 
-import com.blog.commuity.domain.comment.CommentResDto;
+import com.blog.commuity.domain.comment.ParentCommentResDto;
 import com.blog.commuity.domain.post.entity.Post;
 import lombok.Getter;
 
@@ -19,9 +19,9 @@ public class PostWithCommentsResDto implements Serializable {
     private final LocalDateTime createAt;
     private final LocalDateTime updateAt;
 
-    private final List<CommentResDto> comments;
+    private final List<ParentCommentResDto> comments;
 
-    public PostWithCommentsResDto(Post post, List<CommentResDto> commentResDto) {
+    public PostWithCommentsResDto(Post post, List<ParentCommentResDto> commentResDto) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();

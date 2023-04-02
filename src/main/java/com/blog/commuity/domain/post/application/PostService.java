@@ -1,7 +1,7 @@
 package com.blog.commuity.domain.post.application;
 
-import com.blog.commuity.domain.comment.CommentResDto;
 import com.blog.commuity.domain.comment.CommentService;
+import com.blog.commuity.domain.comment.ParentCommentResDto;
 import com.blog.commuity.domain.post.dto.PostReqDto;
 import com.blog.commuity.domain.post.dto.PostResDto;
 import com.blog.commuity.domain.post.dto.PostWithCommentsResDto;
@@ -33,7 +33,7 @@ public class PostService {
 
     public PostWithCommentsResDto getPostWithComments(Long id) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        List<CommentResDto> comment = commentService.getCommentByPostId(id);
+        List<ParentCommentResDto> comment = commentService.getCommentByPostId(id);
         return new PostWithCommentsResDto(post, comment);
     }
 
@@ -41,7 +41,7 @@ public class PostService {
         return postRepository.findAll(page).map(PostResDto::new);
     }
 
-    public Long register(PostReqDto postReqDto, Long userId) throws IOException {
+    public Long register(PostReqDto postReqDto, Long userId)   {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 //        imageSave(postReqDto, multipartFile);
         Post post = postRepository.save(postReqDto.toEntity(user));
