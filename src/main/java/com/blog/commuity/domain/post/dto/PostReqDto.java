@@ -12,15 +12,11 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @Getter
 public class PostReqDto {
-
-
     @NotBlank
     private final String title;
     @NotBlank
     private final String content;
-
     public Post toEntity(User user) {
         return new Post(title, content, user);
     }
-
 }

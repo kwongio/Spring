@@ -1,14 +1,16 @@
 package com.blog.commuity.domain.post.dto;
 
 
+import com.blog.commuity.domain.comment.CommentResDto;
 import com.blog.commuity.domain.post.entity.Post;
 import lombok.Getter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
-public class PostResDto implements Serializable {
+public class PostWithCommentsResDto implements Serializable {
     private final Long id;
     private final String title;
     private final String content;
@@ -17,7 +19,9 @@ public class PostResDto implements Serializable {
     private final LocalDateTime createAt;
     private final LocalDateTime updateAt;
 
-    public PostResDto(Post post) {
+    private final List<CommentResDto> comments;
+
+    public PostWithCommentsResDto(Post post, List<CommentResDto> commentResDto) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
@@ -25,6 +29,7 @@ public class PostResDto implements Serializable {
         this.user = new PostWriteUserDto(post.getUser());
         this.createAt = post.getCreateAt();
         this.updateAt = post.getUpdateAt();
+        this.comments = commentResDto;
     }
 
 }

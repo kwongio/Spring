@@ -17,7 +17,7 @@ import java.util.Date;
 public class Jwt {
     public static final String ACCESS_TOKEN_SECRET_KEY = "시크릿키";
     public static final String REFRESH_TOKEN_SECRET_KEY = "시크릿키";
-    public static final long ACCESS_TOKEN_EXPIRATION_TIME = Duration.ofSeconds(10).toMillis();
+    public static final long ACCESS_TOKEN_EXPIRATION_TIME = Duration.ofDays(1).toMillis();
     public static final long REFRESH_TOKEN_EXPIRATION_TIME = Duration.ofDays(14).toMillis();
     public static final String PREFIX = "Bearer ";
 

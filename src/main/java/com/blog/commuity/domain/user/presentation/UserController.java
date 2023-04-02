@@ -42,11 +42,6 @@ public class UserController {
     }
 
 
-//    @GetMapping("/users")
-//    public ResponseEntity<?> getUserList() {
-//        return ResponseEntity.ok(userService.getUserList());
-//    }
-
     @Operation(summary = "리프레쉬 토큰 검증하고 엑세스토큰 반환")
     @GetMapping("/refresh")
     public ResponseEntity<?> getInfo(HttpServletRequest request, HttpServletResponse response) {
@@ -59,6 +54,7 @@ public class UserController {
                 response.setHeader(HttpHeaders.AUTHORIZATION, accessToken);
             }
         }
+        System.out.println("asdffsaafsafsadfsdf");
         return ResponseEntity.ok("토큰 반환 완료");
     }
 

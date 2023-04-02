@@ -1,7 +1,10 @@
 package com.blog.commuity.domain.post.application;
 
+import com.blog.commuity.domain.comment.CommentResDto;
+import com.blog.commuity.domain.comment.CommentService;
 import com.blog.commuity.domain.post.dto.PostReqDto;
 import com.blog.commuity.domain.post.dto.PostResDto;
+import com.blog.commuity.domain.post.dto.PostWithCommentsResDto;
 import com.blog.commuity.domain.post.entity.Post;
 import com.blog.commuity.domain.post.exception.PostNotFoundException;
 import com.blog.commuity.domain.post.repository.PostRepository;
@@ -14,11 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.List;
 
 @Transactional
 @Service
@@ -27,11 +28,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentService commentService;
     private final static String FILEPATH = "C:\\study-project\\Next\\public\\images\\";
 
-    public PostResDto getPost(Long id) {
+    public PostWithCommentsResDto getPostWithComments(Long id) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        return new PostResDto(post);
+        List<CommentResDto> comment = commentService.getCommentByPostId(id);
+        return new PostWithCommentsResDto(post, comment);
     }
 
     public Page<PostResDto> getPostList(Pageable page) {
@@ -48,20 +51,16 @@ public class PostService {
 
     public void remove(Long id, Long userId) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        if (post.getUser().getId().equals(userId)) {
-            postRepository.delete(post);
-        }
-        throw new AccessDeniedException("권한없음");
+        if (!post.getUser().getId().equals(userId)) throw new AccessDeniedException("권한없음");
+        postRepository.delete(post);
 
     }
 
     public void edit(Long id, PostReqDto postReqDto, Long userId) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        if (post.getUser().getId().equals(userId)) {
-            post.edit(postReqDto);
-            return;
-        }
-        throw new AccessDeniedException("권한없음");
+        if (!post.getUser().getId().equals(userId)) throw new AccessDeniedException("권한없음");
+        post.edit(postReqDto);
+
     }
 
 

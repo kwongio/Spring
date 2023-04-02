@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,9 +42,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("user")
     private List<Post> postList = new ArrayList<>();
+
     @Column(nullable = false)
     @CreatedDate
     private LocalDateTime createAt;
+
     @Column(nullable = false)
     @LastModifiedDate
     private LocalDateTime updateAt;

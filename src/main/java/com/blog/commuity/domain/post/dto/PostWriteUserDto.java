@@ -3,10 +3,11 @@ package com.blog.commuity.domain.post.dto;
 import com.blog.commuity.domain.user.entity.User;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
-public class PostWriteUserDto {
+public class PostWriteUserDto implements Serializable {
 
     private final String username;
     private final String email;

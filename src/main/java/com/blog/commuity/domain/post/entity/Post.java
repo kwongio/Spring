@@ -4,21 +4,21 @@ package com.blog.commuity.domain.post.entity;
 import com.blog.commuity.domain.post.dto.PostReqDto;
 import com.blog.commuity.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-public class Post {
+public class Post  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +35,7 @@ public class Post {
     @ManyToOne(fetch = LAZY)
     @JsonIgnoreProperties("postList")
     private User user;
-    //    @OneToMany(mappedBy = "post")
-//    private List<Comment> commentList = new ArrayList<>();
+
     @Column(nullable = false)
     @CreatedDate
     private LocalDateTime createAt;

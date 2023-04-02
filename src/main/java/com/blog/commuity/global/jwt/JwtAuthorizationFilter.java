@@ -24,10 +24,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         super(authenticationManager);
     }
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (isHeaderVerify(request, response)) {
+        log.info("인가필터");
+        String requestURI = request.getRequestURI();
+        if (!requestURI.equals("/refresh") &&isHeaderVerify(request, response)) {
             try {
                 String token = request.getHeader(HttpHeaders.AUTHORIZATION).replace(Jwt.PREFIX, "");
                 User user = Jwt.accessTokenVerify(token);

@@ -8,6 +8,7 @@ import com.blog.commuity.global.util.CustomResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -37,11 +38,10 @@ public class SecurityConfig {
 
     public static class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
         @Override
-        public void configure(HttpSecurity builder) throws Exception {
+        public void configure(HttpSecurity builder)   {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
             builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
-            builder.addFilterBefore(new JwtAuthorizationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
-            super.configure(builder);
+            builder.addFilter(new JwtAuthorizationFilter(authenticationManager));
         }
     }
 
@@ -54,13 +54,12 @@ public class SecurityConfig {
         http.headers().frameOptions().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.httpBasic().disable();
-        http.apply(new CustomSecurityFilterManager());
-        //로그인이 안되어있다면 반환한다.
-//        http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> CustomResponse.unAuthentication(response, "토큰이 없거나 만료됨"));
-        http.authorizeRequests().antMatchers("/myPage").authenticated();
-        http.authorizeRequests().antMatchers("/post/**").authenticated();
-        http.authorizeRequests().anyRequest().permitAll();
         http.exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> CustomResponse.forbidden(response));
+
+        http.apply(new CustomSecurityFilterManager());
+        http.authorizeRequests().antMatchers(HttpMethod.POST, "/post/**").authenticated();
+        http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/post/**").authenticated();
+        http.authorizeRequests().antMatchers(HttpMethod.PUT, "/post/**").authenticated();
 
         return http.build();
     }
