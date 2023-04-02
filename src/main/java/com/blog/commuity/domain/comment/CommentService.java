@@ -34,9 +34,8 @@ public class CommentService {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         Comment parentComment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
-        Comment replyComment = new Comment(commentReqDto, user, post, parentComment);
-        commentRepository.save(replyComment);
-
+        parentComment.addChildComment(commentReqDto.toEntity(user, post));
+        commentRepository.save(parentComment);
     }
 
 
